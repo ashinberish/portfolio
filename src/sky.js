@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { moods } from './palette.js';
-import { glowTexture } from './world.js';
+import { glowTexture } from './terrain.js';
 
 const smoothstep = THREE.MathUtils.smoothstep;
 
@@ -41,7 +41,7 @@ export function createSky(scene) {
       uniform vec3 horizon;
       varying vec3 vDir;
       void main() {
-        float h = pow(clamp(vDir.y * 2.5, 0.0, 1.0), 0.6);
+        float h = pow(clamp(vDir.y * 2.2, 0.0, 1.0), 0.7);
         gl_FragColor = vec4(mix(horizon, top, h), 1.0);
         #include <colorspace_fragment>
       }`,
@@ -109,7 +109,7 @@ export function createSky(scene) {
   const moon = new THREE.DirectionalLight(0x9fb3ff, 0);
   scene.add(moon, moon.target);
 
-  scene.fog = new THREE.Fog(0xffffff, 40, 140);
+  scene.fog = new THREE.Fog(0xffffff, 45, 190);
   const white = new THREE.Color(0xffffff);
 
   const sunDir = new THREE.Vector3();
@@ -131,8 +131,8 @@ export function createSky(scene) {
     starMat.opacity = smoothstep(nightness, 0.4, 1);
 
     // Discs arc across the sky ahead of the viewer.
-    sunDir.set(-Math.cos(angle) * 0.9, Math.sin(angle) * 0.14 + 0.05, -1).normalize();
-    moonDir.set(Math.cos(angle) * 0.9, -Math.sin(angle) * 0.14 + 0.05, -1).normalize();
+    sunDir.set(-Math.cos(angle) * 0.9, Math.sin(angle) * 0.3 + 0.06, -1).normalize();
+    moonDir.set(Math.cos(angle) * 0.9, -Math.sin(angle) * 0.3 + 0.06, -1).normalize();
     sunDisc.g.position.copy(sunDir).multiplyScalar(400);
     moonDisc.g.position.copy(moonDir).multiplyScalar(400);
     sunDisc.g.lookAt(camera.position);

@@ -1,6 +1,10 @@
 :root {
-  --ink: #3b2f4a;
-  --ink-soft: #7a6a8a;
+  --ink: #14304f;
+  --ink-soft: #3d5f82;
+  --glass: rgba(255, 255, 255, 0.55);
+  --glass-edge: rgba(255, 255, 255, 0.7);
+  --shadow: 20, 48, 79;
+  --accent: #e98a4f;
 }
 
 *,
@@ -13,16 +17,25 @@
 
 html,
 body {
-  transition: background-color 600ms ease;
   width: 100%;
   height: 100%;
   overflow: hidden;
   overscroll-behavior: none;
   touch-action: none;
-  background: #fde7d3;
-  font-family: 'Fredoka', ui-rounded, 'SF Pro Rounded', system-ui, sans-serif;
+  background: #d6ebf7;
+  font-family: 'Inter', system-ui, sans-serif;
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
+  transition: background-color 600ms ease;
+}
+
+body.is-night {
+  --ink: #e6eeff;
+  --ink-soft: #b9c7e6;
+  --glass: rgba(14, 24, 54, 0.45);
+  --glass-edge: rgba(160, 180, 230, 0.25);
+  --shadow: 4, 8, 24;
+  background: #1d2a52;
 }
 
 #scene {
@@ -33,6 +46,7 @@ body {
   display: block;
 }
 
+/* Name block */
 .overlay {
   position: fixed;
   inset: 0;
@@ -40,84 +54,107 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: 0 16px 8vh;
   pointer-events: none;
   text-align: center;
-  padding: 0 16px;
+  color: #fff;
+}
+
+.eyebrow {
+  font-weight: 500;
+  font-size: clamp(0.8rem, 1.6vw, 0.95rem);
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  opacity: 0.92;
+  text-shadow: 0 1px 12px rgba(var(--shadow), 0.45);
+  animation: rise 900ms 100ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
 .name {
-  font-weight: 700;
-  font-size: clamp(2.6rem, 9vw, 7.5rem);
-  line-height: 0.95;
-  letter-spacing: -0.02em;
-  color: #fff;
+  margin-top: 0.35rem;
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  font-variation-settings: 'SOFT' 100, 'opsz' 144;
+  font-size: clamp(3rem, 9vw, 7.25rem);
+  line-height: 1;
+  letter-spacing: -0.025em;
   text-shadow:
-    0 2px 0 #f2a48c,
-    0 4px 0 #e98c74,
-    0 6px 0 #d9765f,
-    0 14px 24px rgba(120, 60, 60, 0.25);
-  animation: pop 900ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    0 1px 1px rgba(var(--shadow), 0.25),
+    0 6px 28px rgba(var(--shadow), 0.4);
+  animation: rise 1100ms 200ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
 .role {
-  margin-top: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 1.1rem;
   font-weight: 500;
-  font-size: clamp(0.95rem, 2.2vw, 1.25rem);
-  letter-spacing: 0.08em;
+  font-size: clamp(0.8rem, 1.7vw, 1rem);
+  letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--ink-soft);
-  animation: pop 900ms 150ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  text-shadow: 0 1px 12px rgba(var(--shadow), 0.5);
+  animation: rise 1100ms 350ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
+.role::before,
+.role::after {
+  content: '';
+  width: 36px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.7;
+}
+
+/* Corner controls */
 .links {
   position: fixed;
-  left: 0;
-  right: 0;
-  bottom: max(20px, env(safe-area-inset-bottom));
+  top: max(18px, env(safe-area-inset-top));
+  left: 18px;
   display: flex;
-  justify-content: center;
-  gap: 12px;
+  gap: 10px;
+}
+
+.links a,
+.daynight {
+  background: var(--glass);
+  border: 1px solid var(--glass-edge);
+  box-shadow: 0 6px 20px rgba(var(--shadow), 0.12);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition:
+    background-color 400ms ease,
+    border-color 400ms ease,
+    transform 150ms ease;
 }
 
 .links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 999px;
   font-weight: 500;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   color: var(--ink);
   text-decoration: none;
-  padding: 8px 18px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.7);
-  box-shadow: 0 4px 0 rgba(59, 47, 74, 0.12);
-  backdrop-filter: blur(6px);
-  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+
+.links svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
 }
 
 .links a:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 0 rgba(59, 47, 74, 0.12);
+  transform: translateY(-1px);
 }
 
-.links a:active {
-  transform: translateY(2px);
-  box-shadow: 0 1px 0 rgba(59, 47, 74, 0.12);
-}
-
-@keyframes pop {
-  from {
-    opacity: 0;
-    transform: translateY(16px) scale(0.92);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .name,
-  .role {
-    animation: none;
-  }
+.links a:focus-visible,
+.daynight:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
 
 /* Day / night switch */
@@ -125,22 +162,12 @@ body {
   position: fixed;
   top: max(18px, env(safe-area-inset-top));
   right: 18px;
-  width: 68px;
-  height: 36px;
+  width: 70px;
+  height: 38px;
   padding: 0;
-  border: 0;
   border-radius: 999px;
   cursor: pointer;
-  background: rgba(255, 255, 255, 0.7);
-  box-shadow: 0 4px 0 rgba(59, 47, 74, 0.12);
-  backdrop-filter: blur(6px);
-  transition: background-color 400ms ease;
   -webkit-tap-highlight-color: transparent;
-}
-
-.daynight:focus-visible {
-  outline: 3px solid #ffb08a;
-  outline-offset: 3px;
 }
 
 .daynight .icon {
@@ -156,18 +183,17 @@ body {
 
 .daynight .sun {
   left: 10px;
-  stroke: #f2a14b;
-  fill: none;
+  stroke: #e9a23b;
 }
 
 .daynight .sun circle {
-  fill: #ffc85c;
+  fill: #f6c35b;
 }
 
 .daynight .moon {
   right: 10px;
-  stroke: #8d93c9;
-  fill: #8d93c9;
+  stroke: var(--ink-soft);
+  fill: var(--ink-soft);
 }
 
 .daynight .knob {
@@ -178,40 +204,40 @@ body {
   height: 28px;
   border-radius: 50%;
   background: #fff;
-  box-shadow: 0 2px 6px rgba(59, 47, 74, 0.25);
+  box-shadow: 0 2px 6px rgba(var(--shadow), 0.3);
   transform: translateX(32px);
-  transition: transform 350ms cubic-bezier(0.34, 1.56, 0.64, 1), background-color 400ms ease;
+  transition:
+    transform 350ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    background-color 400ms ease;
 }
 
 .daynight[aria-checked='true'] .knob {
   transform: translateX(0);
-  background: #fff6dc;
-}
-
-body.is-night {
-  background: #2c2f60;
-}
-
-body.is-night .role {
-  color: #c9cdf2;
-}
-
-body.is-night .links a,
-body.is-night .daynight {
-  background: rgba(40, 44, 90, 0.6);
-  color: #eef0ff;
-  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.2);
+  background: #dfe7ff;
 }
 
 body.is-night .daynight .moon {
-  stroke: #fff6dc;
-  fill: #fff6dc;
+  stroke: #fff4d6;
+  fill: #fff4d6;
 }
 
-body.is-night .name {
-  text-shadow:
-    0 2px 0 #b9a4e6,
-    0 4px 0 #9a86d0,
-    0 6px 0 #7d6bb8,
-    0 14px 30px rgba(10, 10, 40, 0.5);
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eyebrow,
+  .name,
+  .role {
+    animation: none;
+  }
 }
