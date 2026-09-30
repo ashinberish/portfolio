@@ -5,6 +5,7 @@ import { createTerrain } from './terrain.js';
 import { createWorld } from './world.js';
 import { createSky } from './sky.js';
 import { createAudio } from './audio.js';
+import { createTraffic } from './traffic.js';
 import { roadSlope, roadX } from './path.js';
 
 const canvas = document.getElementById('scene');
@@ -23,6 +24,8 @@ scene.add(world.object);
 const sky = createSky(scene);
 const car = createCar();
 scene.add(car.object);
+const traffic = createTraffic();
+scene.add(traffic.object);
 
 // Dust puffs live in world space so they trail behind on bends.
 const puffGeo = new THREE.IcosahedronGeometry(0.14, 1);
@@ -147,7 +150,8 @@ renderer.setAnimationLoop((time) => {
   // Drive along the winding road at a steady speed.
   const slope = roadSlope(carPos.z);
   carPos.z -= (SPEED * dt) / Math.hypot(1, slope);
-  carPos.x = roadX(carPos.z);
+  // Keep to the right-hand lane; cyclists come the other way on the left.
+  carPos.x = roadX(carPos.z) + 0.7 * Math.hypot(1, roadSlope(carPos.z));
   // Local +x is the car's nose; travel direction is (-slope, -1) in xz.
   const newYaw = Math.atan2(1, -roadSlope(carPos.z));
   let yawRate = 0;
@@ -195,5 +199,6 @@ renderer.setAnimationLoop((time) => {
 
   terrain.update(t, carPos.z);
   world.update(t, dt, carPos, camX);
+  traffic.update(t, dt, carPos.z, nightness);
   renderer.render(scene, camera);
 });

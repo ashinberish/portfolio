@@ -15,6 +15,7 @@ npm run preview  # serve the build
 - Road, river and hill shapes: `src/path.js`
 - Terrain, dirt road, river, forest, lanterns: `src/terrain.js`
 - Mountains, clouds, birds: `src/world.js`
+- Boats on the river and cyclists on the road: `src/traffic.js`
 - Sky, sun/moon, stars and lighting: `src/sky.js`
 - Sounds (engine, gravel, river, birds, crickets — synthesised, no files): `src/audio.js`
 - Camera, day/night and sound toggles, loop: `src/main.js`
