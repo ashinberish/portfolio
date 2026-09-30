@@ -295,7 +295,6 @@ html.has-cursor * {
 }
 
 .cursor,
-.cursor-ring,
 .cursor-burst {
   position: fixed;
   top: 0;
@@ -331,33 +330,8 @@ html.has-cursor * {
   stroke-linejoin: round;
 }
 
-.cursor-ring {
-  width: 34px;
-  height: 34px;
-  margin: -17px 0 0 -17px;
-  border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.85);
-  box-shadow:
-    0 0 0 1px rgba(var(--shadow), 0.15),
-    0 4px 14px rgba(var(--shadow), 0.2);
-  transition:
-    width 260ms cubic-bezier(0.34, 1.56, 0.64, 1),
-    height 260ms cubic-bezier(0.34, 1.56, 0.64, 1),
-    margin 260ms cubic-bezier(0.34, 1.56, 0.64, 1),
-    background-color 200ms ease,
-    border-color 200ms ease,
-    opacity 200ms ease;
-}
-
-html.cursor-hover .cursor-ring {
-  width: 54px;
-  height: 54px;
-  margin: -27px 0 0 -27px;
-  background: rgba(233, 138, 79, 0.18);
-  border-color: #e98a4f;
-}
-
-html.cursor-hover .cursor svg {
+html.cursor-hover .cursor svg,
+html.cursor-over-car .cursor svg {
   transform: scale(0.85) rotate(-14deg);
 }
 
@@ -365,14 +339,7 @@ html.cursor-down .cursor svg {
   transform: scale(0.72, 0.82) rotate(-6deg);
 }
 
-html.cursor-down .cursor-ring {
-  width: 26px;
-  height: 26px;
-  margin: -13px 0 0 -13px;
-}
-
-html.cursor-hidden .cursor,
-html.cursor-hidden .cursor-ring {
+html.cursor-hidden .cursor {
   opacity: 0;
 }
 

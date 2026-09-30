@@ -40,44 +40,45 @@ export function createAudio() {
     master.connect(ctx.destination);
     const noise = noiseBuffer(ctx);
 
-    // Engine: two detuned low oscillators, muffled, with a putt-putt wobble.
+    // Engine: a soft, warm hum. Pure low tones (no buzzy saw/square edges),
+    // heavily muffled, with only a gentle idle pulse.
     engineBus = ctx.createGain();
-    engineBus.gain.value = 0.16;
+    engineBus.gain.value = 0.1;
     engineFilter = ctx.createBiquadFilter();
     engineFilter.type = 'lowpass';
-    engineFilter.frequency.value = 320;
-    engineFilter.Q.value = 1.2;
+    engineFilter.frequency.value = 200;
+    engineFilter.Q.value = 0.5;
     engineOsc = ctx.createOscillator();
-    engineOsc.type = 'sawtooth';
-    engineOsc.frequency.value = 46;
+    engineOsc.type = 'sine';
+    engineOsc.frequency.value = 44;
     engineSub = ctx.createOscillator();
-    engineSub.type = 'square';
-    engineSub.frequency.value = 93;
+    engineSub.type = 'triangle';
+    engineSub.frequency.value = 88;
     const subGain = ctx.createGain();
-    subGain.gain.value = 0.35;
-    const putt = ctx.createOscillator();
-    putt.frequency.value = 23;
-    const puttDepth = ctx.createGain();
-    puttDepth.gain.value = 0.07;
-    putt.connect(puttDepth).connect(engineBus.gain);
+    subGain.gain.value = 0.45;
+    const pulse = ctx.createOscillator();
+    pulse.frequency.value = 11;
+    const pulseDepth = ctx.createGain();
+    pulseDepth.gain.value = 0.02;
+    pulse.connect(pulseDepth).connect(engineBus.gain);
     engineOsc.connect(engineFilter);
     engineSub.connect(subGain).connect(engineFilter);
     engineFilter.connect(engineBus).connect(master);
     engineOsc.start();
     engineSub.start();
-    putt.start();
+    pulse.start();
 
-    // Tyres on gravel: band-passed noise with a slow crackle.
+    // Tyres on gravel: a quiet, low rumble rather than a hiss.
     gravelBus = ctx.createGain();
-    gravelBus.gain.value = 0.05;
+    gravelBus.gain.value = 0.022;
     const gravelFilter = ctx.createBiquadFilter();
-    gravelFilter.type = 'bandpass';
-    gravelFilter.frequency.value = 1400;
-    gravelFilter.Q.value = 0.6;
+    gravelFilter.type = 'lowpass';
+    gravelFilter.frequency.value = 520;
+    gravelFilter.Q.value = 0.4;
     const crackle = ctx.createOscillator();
-    crackle.frequency.value = 7.3;
+    crackle.frequency.value = 5.3;
     const crackleDepth = ctx.createGain();
-    crackleDepth.gain.value = 0.02;
+    crackleDepth.gain.value = 0.006;
     crackle.connect(crackleDepth).connect(gravelBus.gain);
     crackle.start();
     loopNoise(ctx, noise).connect(gravelFilter).connect(gravelBus).connect(master);
@@ -176,6 +177,36 @@ export function createAudio() {
     }
   }
 
+  // Friendly two-tone toy horn: "beep-beep".
+  function horn() {
+    if (!ctx || !enabled || ctx.state !== 'running') return;
+    const now = ctx.currentTime;
+    const out = ctx.createGain();
+    out.gain.value = 0.11;
+    const tone = ctx.createBiquadFilter();
+    tone.type = 'lowpass';
+    tone.frequency.value = 1500;
+    tone.Q.value = 2;
+    tone.connect(out).connect(master);
+    for (const [start, len] of [[0, 0.13], [0.2, 0.22]]) {
+      const env = ctx.createGain();
+      env.gain.setValueAtTime(0, now + start);
+      env.gain.linearRampToValueAtTime(1, now + start + 0.015);
+      env.gain.setValueAtTime(1, now + start + len - 0.04);
+      env.gain.linearRampToValueAtTime(0, now + start + len);
+      env.connect(tone);
+      // Two notes a third apart, like a real car horn.
+      for (const f of [392, 494]) {
+        const o = ctx.createOscillator();
+        o.type = 'square';
+        o.frequency.value = f;
+        o.connect(env);
+        o.start(now + start);
+        o.stop(now + start + len + 0.02);
+      }
+    }
+  }
+
   async function setEnabled(on) {
     enabled = on;
     if (on) {
@@ -203,10 +234,10 @@ export function createAudio() {
 
     // Engine works a little harder through bends and wanders naturally.
     const load = Math.min(1, Math.abs(yawRate) * 1.5);
-    const rpm = 46 + Math.sin(t * 0.37) * 2 + Math.sin(t * 1.3) * 0.8 + load * 6;
-    engineOsc.frequency.setTargetAtTime(rpm, now, 0.2);
-    engineSub.frequency.setTargetAtTime(rpm * 2.02, now, 0.2);
-    engineFilter.frequency.setTargetAtTime(300 + load * 180, now, 0.2);
+    const rpm = 44 + Math.sin(t * 0.37) * 1.2 + load * 4;
+    engineOsc.frequency.setTargetAtTime(rpm, now, 0.4);
+    engineSub.frequency.setTargetAtTime(rpm * 2, now, 0.4);
+    engineFilter.frequency.setTargetAtTime(190 + load * 60, now, 0.4);
 
     planeBus.gain.setTargetAtTime(plane.level * 0.09, now, 0.3);
     planePan.pan.setTargetAtTime(plane.pan, now, 0.3);
@@ -224,5 +255,5 @@ export function createAudio() {
     }
   }
 
-  return { setEnabled, update, get enabled() { return enabled; } };
+  return { setEnabled, update, horn, get enabled() { return enabled; } };
 }

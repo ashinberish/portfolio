@@ -120,6 +120,12 @@ export function createCar() {
   beam.target.position.set(8, 0, 0);
   car.add(beam, beam.target);
 
+  // Headlights blink along with the horn.
+  let flash = 0;
+  function honk() {
+    flash = 0.45;
+  }
+
   function update(t, dt, speed, yawRate, night) {
     for (const wheel of wheels) wheel.rotation.z -= (speed * dt) / WHEEL_RADIUS;
 
@@ -129,10 +135,12 @@ export function createCar() {
     body.rotation.x += (lean - body.rotation.x) * Math.min(1, dt * 4);
     body.rotation.z = Math.sin(t * 7) * 0.012;
 
-    beam.intensity = night * 30;
-    headMat.emissiveIntensity = 0.3 + night * 2;
+    flash = Math.max(0, flash - dt);
+    const blink = flash > 0 && (flash > 0.3 || flash < 0.2) ? 1 : 0;
+    beam.intensity = night * 30 + blink * 25;
+    headMat.emissiveIntensity = 0.3 + night * 2 + blink * 3;
     tailMat.emissiveIntensity = 0.3 + night * 1.5;
   }
 
-  return { object: car, update };
+  return { object: car, update, honk };
 }

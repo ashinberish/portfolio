@@ -19,5 +19,5 @@ npm run preview  # serve the build
 - Monoplanes: `src/planes.js`
 - Cartoon cursor: `src/cursor.js`
 - Sky, sun/moon, stars and lighting: `src/sky.js`
-- Sounds (engine, gravel, river, birds, crickets — synthesised, no files): `src/audio.js`
+- Sounds (engine, gravel, river, birds, crickets, planes, horn — synthesised, no files): `src/audio.js`. Click the wagon or press H to honk.
 - Camera, day/night and sound toggles, loop: `src/main.js`

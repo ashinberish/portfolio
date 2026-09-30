@@ -1,5 +1,5 @@
-// A playful cartoon cursor: an arrow that tilts as it moves, with a springy
-// ring trailing behind. Only for mouse/trackpad users; touch keeps the default.
+// A playful cartoon cursor: an arrow that tilts as it moves and squishes on click.
+// Only for mouse/trackpad users; touch keeps the default.
 
 const ARROW = `
 <svg viewBox="0 0 28 30" aria-hidden="true">
@@ -13,17 +13,11 @@ export function createCursor() {
   const arrow = document.createElement('div');
   arrow.className = 'cursor';
   arrow.innerHTML = ARROW;
-  const ring = document.createElement('div');
-  ring.className = 'cursor-ring';
-  document.body.append(ring, arrow);
+  document.body.append(arrow);
   document.documentElement.classList.add('has-cursor');
 
   let x = -100;
   let y = -100;
-  let rx = x;
-  let ry = y;
-  let vx = 0;
-  let vy = 0;
   let tilt = 0;
   let lastX = x;
   let visible = false;
@@ -39,8 +33,6 @@ export function createCursor() {
     x = e.clientX;
     y = e.clientY;
     if (!visible) {
-      rx = x;
-      ry = y;
       lastX = x;
       show(true);
     }
@@ -66,19 +58,6 @@ export function createCursor() {
     const dt = Math.min(0.05, (now - last) / 1000);
     last = now;
 
-    // Ring follows on a soft spring.
-    if (reduced) {
-      rx = x;
-      ry = y;
-    } else {
-      const k = 180;
-      const damping = 18;
-      vx += ((x - rx) * k - vx * damping) * dt;
-      vy += ((y - ry) * k - vy * damping) * dt;
-      rx += vx * dt;
-      ry += vy * dt;
-    }
-
     // Arrow leans into horizontal movement, then settles.
     const speed = (x - lastX) / Math.max(dt, 1e-3);
     lastX = x;
@@ -86,7 +65,6 @@ export function createCursor() {
     tilt += (target - tilt) * Math.min(1, dt * 10);
 
     arrow.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(${tilt.toFixed(2)}deg)`;
-    ring.style.transform = `translate3d(${rx}px, ${ry}px, 0)`;
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);

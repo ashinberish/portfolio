@@ -110,6 +110,33 @@ if (store.get() === 'on') {
   window.addEventListener('keydown', resume, { once: true });
 }
 
+// --- Horn ----------------------------------------------------------------------
+// Honk by clicking the wagon or pressing H; it also greets passing cyclists.
+function honk() {
+  car.honk();
+  audio.horn();
+}
+const raycaster = new THREE.Raycaster();
+const ndc = new THREE.Vector2();
+let pointerOverCar = false;
+let pointerDirty = false;
+let lastPointer = null;
+function hitsCar(e) {
+  ndc.set((e.clientX / window.innerWidth) * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1);
+  raycaster.setFromCamera(ndc, camera);
+  return raycaster.intersectObject(car.object, true).length > 0;
+}
+canvas.addEventListener('pointermove', (e) => {
+  lastPointer = e;
+  pointerDirty = true;
+});
+canvas.addEventListener('pointerdown', (e) => {
+  if (hitsCar(e)) honk();
+});
+window.addEventListener('keydown', (e) => {
+  if ((e.key === 'h' || e.key === 'H') && !e.repeat && !e.metaKey && !e.ctrlKey && !e.altKey) honk();
+});
+
 // --- Camera ------------------------------------------------------------------
 const pointer = new THREE.Vector2();
 const parallax = new THREE.Vector2();
@@ -204,7 +231,14 @@ renderer.setAnimationLoop((time) => {
 
   terrain.update(t, carPos.z);
   world.update(t, dt, carPos, camX);
-  traffic.update(t, dt, carPos.z, nightness);
+  if (traffic.update(t, dt, carPos.z, nightness) && Math.random() < 0.7) honk();
+
+  // The wagon is clickable: show the hover cursor over it (checked once per frame).
+  if (pointerDirty) {
+    pointerDirty = false;
+    pointerOverCar = hitsCar(lastPointer);
+    document.documentElement.classList.toggle('cursor-over-car', pointerOverCar);
+  }
   const planeSound = planes.update(t, dt, carPos.z, camera.position, nightness);
   audio.update(t, yawRate, nightness, planeSound);
   renderer.render(scene, camera);

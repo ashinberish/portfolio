@@ -425,7 +425,9 @@ export function createTraffic() {
   const handB = new THREE.Vector3();
   const rowerSpace = new THREE.Matrix4();
 
+  // Returns true when a cyclist is about to pass the wagon (time for a friendly honk).
   function update(t, dt, carZ, night) {
+    let greet = false;
     lantern.emissiveIntensity = 0.2 + night * 3;
     bikeLamp.emissiveIntensity = 0.2 + night * 3;
 
@@ -498,7 +500,16 @@ export function createTraffic() {
       const turned = (b.speed * t) / b.radius;
       for (const w of b.wheels) w.rotation.z = -turned;
       b.pedalTo(-turned * 0.45 + b.phase, t);
+
+      const rel = b.z - carZ;
+      if (!b.greeted && rel > -10 && rel < 0) {
+        b.greeted = true;
+        greet = true;
+      } else if (rel < -30) {
+        b.greeted = false;
+      }
     }
+    return greet;
   }
 
   return { object: group, update };
