@@ -1,11 +1,8 @@
 export const palette = {
-  sky: 0xfde7d3,
-  ground: 0xbfe8b4,
   road: 0x6f6784,
   roadLine: 0xfff4ea,
-  curb: 0xfff4ea,
   carBody: 0xff6b5b,
-  carCabin: 0xfff4ea,
+  carTrim: 0xfff4ea,
   glass: 0x3f4f7a,
   tire: 0x2f2a3a,
   hub: 0xe8e1f0,
@@ -14,5 +11,47 @@ export const palette = {
   trunk: 0xa8795a,
   foliage: [0x7fd18b, 0x5fc27a, 0xa4e08f, 0xffb3c7],
   rock: 0xc9bfd8,
-  cloud: 0xffffff,
+  sand: 0xf3dfb0,
+  water: 0x7fd3ea,
+  lampPost: 0xe8e1f0,
+  lampGlow: 0xffd98a,
+  bird: 0x3b2f4a,
+};
+
+// Sky and ambient colours at three key moments; the scene blends between them
+// based on the sun's height (night → sunrise/sunset → day).
+export const moods = {
+  night: {
+    skyTop: 0x0e1433,
+    horizon: 0x2c2f60,
+    ground: 0x2c4a4c,
+    hemiSky: 0x5a6ab8,
+    hemiGround: 0x1d2b33,
+    sun: 0x9fb3ff,
+    mountain: 0x3a3f73,
+    snow: 0x9aa6d8,
+    cloud: 0x4a4f82,
+  },
+  dusk: {
+    skyTop: 0x7483c9,
+    horizon: 0xffb08a,
+    ground: 0xa9c48a,
+    hemiSky: 0xffd2b8,
+    hemiGround: 0x8a9a78,
+    sun: 0xffa56b,
+    mountain: 0xb088a8,
+    snow: 0xffe1d0,
+    cloud: 0xffd0c0,
+  },
+  day: {
+    skyTop: 0x7cc8f0,
+    horizon: 0xfde7d3,
+    ground: 0xb4e3a3,
+    hemiSky: 0xfff6ee,
+    hemiGround: 0xa9c9a0,
+    sun: 0xfff3e0,
+    mountain: 0x9fb6d6,
+    snow: 0xffffff,
+    cloud: 0xffffff,
+  },
 };

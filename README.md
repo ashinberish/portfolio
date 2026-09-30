@@ -1,6 +1,6 @@
 # Portfolio
 
-A minimal single-page, non-scrolling 3D portfolio: a toy car cruising down an endless road, built with [three.js](https://threejs.org) and [Vite](https://vite.dev).
+A minimal single-page, non-scrolling 3D portfolio: a toy SUV zig-zagging down an endless road toward the mountains, past a river, birds and clouds, with a day/night cycle that follows the visitor's local time (or a toggle). Built with [three.js](https://threejs.org) and [Vite](https://vite.dev).
 
 ```sh
 npm install
@@ -10,7 +10,9 @@ npm run preview  # serve the build
 ```
 
 - Name / role / links: `index.html`
-- Colors: `src/palette.js`
+- Colors (incl. night / dusk / day moods): `src/palette.js`
 - Car model: `src/car.js`
-- Road and scenery: `src/world.js`
-- Camera, lights, loop: `src/main.js`
+- Road shape: `src/path.js`
+- River, scenery, mountains, clouds, birds, lamps: `src/world.js`
+- Sky, sun/moon, stars and lighting: `src/sky.js`
+- Camera, day/night switch, loop: `src/main.js`

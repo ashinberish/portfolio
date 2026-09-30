@@ -13,6 +13,7 @@
 
 html,
 body {
+  transition: background-color 600ms ease;
   width: 100%;
   height: 100%;
   overflow: hidden;
@@ -117,4 +118,100 @@ body {
   .role {
     animation: none;
   }
+}
+
+/* Day / night switch */
+.daynight {
+  position: fixed;
+  top: max(18px, env(safe-area-inset-top));
+  right: 18px;
+  width: 68px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 4px 0 rgba(59, 47, 74, 0.12);
+  backdrop-filter: blur(6px);
+  transition: background-color 400ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.daynight:focus-visible {
+  outline: 3px solid #ffb08a;
+  outline-offset: 3px;
+}
+
+.daynight .icon {
+  position: absolute;
+  top: 9px;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.daynight .sun {
+  left: 10px;
+  stroke: #f2a14b;
+  fill: none;
+}
+
+.daynight .sun circle {
+  fill: #ffc85c;
+}
+
+.daynight .moon {
+  right: 10px;
+  stroke: #8d93c9;
+  fill: #8d93c9;
+}
+
+.daynight .knob {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(59, 47, 74, 0.25);
+  transform: translateX(32px);
+  transition: transform 350ms cubic-bezier(0.34, 1.56, 0.64, 1), background-color 400ms ease;
+}
+
+.daynight[aria-checked='true'] .knob {
+  transform: translateX(0);
+  background: #fff6dc;
+}
+
+body.is-night {
+  background: #2c2f60;
+}
+
+body.is-night .role {
+  color: #c9cdf2;
+}
+
+body.is-night .links a,
+body.is-night .daynight {
+  background: rgba(40, 44, 90, 0.6);
+  color: #eef0ff;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.2);
+}
+
+body.is-night .daynight .moon {
+  stroke: #fff6dc;
+  fill: #fff6dc;
+}
+
+body.is-night .name {
+  text-shadow:
+    0 2px 0 #b9a4e6,
+    0 4px 0 #9a86d0,
+    0 6px 0 #7d6bb8,
+    0 14px 30px rgba(10, 10, 40, 0.5);
 }
