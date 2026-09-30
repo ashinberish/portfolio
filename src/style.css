@@ -1,0 +1,120 @@
+:root {
+  --ink: #3b2f4a;
+  --ink-soft: #7a6a8a;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: none;
+  background: #fde7d3;
+  font-family: 'Fredoka', ui-rounded, 'SF Pro Rounded', system-ui, sans-serif;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+#scene {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  text-align: center;
+  padding: 0 16px;
+}
+
+.name {
+  font-weight: 700;
+  font-size: clamp(2.6rem, 9vw, 7.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  color: #fff;
+  text-shadow:
+    0 2px 0 #f2a48c,
+    0 4px 0 #e98c74,
+    0 6px 0 #d9765f,
+    0 14px 24px rgba(120, 60, 60, 0.25);
+  animation: pop 900ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.role {
+  margin-top: 0.9rem;
+  font-weight: 500;
+  font-size: clamp(0.95rem, 2.2vw, 1.25rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  animation: pop 900ms 150ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.links {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: max(20px, env(safe-area-inset-bottom));
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.links a {
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--ink);
+  text-decoration: none;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 4px 0 rgba(59, 47, 74, 0.12);
+  backdrop-filter: blur(6px);
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+
+.links a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 rgba(59, 47, 74, 0.12);
+}
+
+.links a:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 rgba(59, 47, 74, 0.12);
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .name,
+  .role {
+    animation: none;
+  }
+}

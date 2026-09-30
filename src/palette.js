@@ -1,0 +1,18 @@
+export const palette = {
+  sky: 0xfde7d3,
+  ground: 0xbfe8b4,
+  road: 0x6f6784,
+  roadLine: 0xfff4ea,
+  curb: 0xfff4ea,
+  carBody: 0xff6b5b,
+  carCabin: 0xfff4ea,
+  glass: 0x3f4f7a,
+  tire: 0x2f2a3a,
+  hub: 0xe8e1f0,
+  headlight: 0xfff3a3,
+  taillight: 0xff3b5c,
+  trunk: 0xa8795a,
+  foliage: [0x7fd18b, 0x5fc27a, 0xa4e08f, 0xffb3c7],
+  rock: 0xc9bfd8,
+  cloud: 0xffffff,
+};
