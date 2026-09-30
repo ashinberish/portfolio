@@ -9,7 +9,7 @@ npm run build    # production build in dist/
 npm run preview  # serve the build
 ```
 
-- Name / role / links: `index.html` (the name and role are drawn as the hillside sign)
+- Name / role / links: `index.html`
 - Colors (incl. night / dusk / day moods): `src/palette.js`
 - Car model: `src/car.js`
 - Road, river and hill shapes: `src/path.js`
@@ -17,7 +17,6 @@ npm run preview  # serve the build
 - Mountains, clouds, birds: `src/world.js`
 - Boats on the river and cyclists on the road: `src/traffic.js`
 - Monoplanes: `src/planes.js`
-- Hollywood-style hillside name sign: `src/sign.js` (font: Droid Sans Bold, Apache-2.0, see `src/fonts/NOTICE-droid-sans.txt`)
 - Cartoon cursor: `src/cursor.js`
 - Sky, sun/moon, stars and lighting: `src/sky.js`
 - Sounds (engine, gravel, river, birds, crickets — synthesised, no files): `src/audio.js`
