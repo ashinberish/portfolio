@@ -27,6 +27,8 @@ export function createAudio() {
   let riverBus;
   let birdBus;
   let cricketBus;
+  let planeBus;
+  let planePan;
   let nextBird = 0;
   let nextCricket = 0;
   let enabled = false;
@@ -95,6 +97,31 @@ export function createAudio() {
     ripple.connect(rippleDepth).connect(riverBus.gain);
     ripple.start();
     loopNoise(ctx, noise).connect(riverFilter).connect(riverPan).connect(riverBus).connect(master);
+
+    // Distant propeller drone; level and pan follow the nearest plane.
+    planeBus = ctx.createGain();
+    planeBus.gain.value = 0;
+    planePan = ctx.createStereoPanner();
+    const planeFilter = ctx.createBiquadFilter();
+    planeFilter.type = 'bandpass';
+    planeFilter.frequency.value = 520;
+    planeFilter.Q.value = 0.9;
+    const planeTone = ctx.createGain();
+    planeTone.gain.value = 1;
+    for (const f of [86, 129]) {
+      const o = ctx.createOscillator();
+      o.type = 'sawtooth';
+      o.frequency.value = f;
+      o.connect(planeTone);
+      o.start();
+    }
+    const buzz = ctx.createOscillator();
+    buzz.frequency.value = 31;
+    const buzzDepth = ctx.createGain();
+    buzzDepth.gain.value = 0.35;
+    buzz.connect(buzzDepth).connect(planeTone.gain);
+    buzz.start();
+    planeTone.connect(planeFilter).connect(planePan).connect(planeBus).connect(master);
 
     birdBus = ctx.createGain();
     birdBus.connect(master);
@@ -169,8 +196,8 @@ export function createAudio() {
     else ctx.resume();
   });
 
-  // Called every frame with how bendy the road is and how dark it is.
-  function update(t, yawRate, nightness) {
+  // Called every frame with how bendy the road is, how dark it is and the nearest plane.
+  function update(t, yawRate, nightness, plane = { level: 0, pan: 0 }) {
     if (!ctx || !enabled || ctx.state !== 'running') return;
     const now = ctx.currentTime;
 
@@ -180,6 +207,9 @@ export function createAudio() {
     engineOsc.frequency.setTargetAtTime(rpm, now, 0.2);
     engineSub.frequency.setTargetAtTime(rpm * 2.02, now, 0.2);
     engineFilter.frequency.setTargetAtTime(300 + load * 180, now, 0.2);
+
+    planeBus.gain.setTargetAtTime(plane.level * 0.09, now, 0.3);
+    planePan.pan.setTargetAtTime(plane.pan, now, 0.3);
 
     birdBus.gain.setTargetAtTime(1 - nightness, now, 0.5);
     cricketBus.gain.setTargetAtTime(nightness, now, 0.5);

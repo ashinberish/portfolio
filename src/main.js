@@ -6,6 +6,9 @@ import { createWorld } from './world.js';
 import { createSky } from './sky.js';
 import { createAudio } from './audio.js';
 import { createTraffic } from './traffic.js';
+import { createPlanes } from './planes.js';
+import { createCursor } from './cursor.js';
+import { createSign } from './sign.js';
 import { roadSlope, roadX } from './path.js';
 
 const canvas = document.getElementById('scene');
@@ -26,6 +29,17 @@ const car = createCar();
 scene.add(car.object);
 const traffic = createTraffic();
 scene.add(traffic.object);
+const planes = createPlanes();
+scene.add(planes.object);
+// The name and title live in the HTML (for screen readers and search) and are
+// drawn as a hillside sign in the scene.
+const sign = createSign(
+  document.querySelector('.name').textContent,
+  document.querySelector('.role').textContent,
+);
+scene.add(sign.object);
+
+createCursor();
 
 // Dust puffs live in world space so they trail behind on bends.
 const puffGeo = new THREE.IcosahedronGeometry(0.14, 1);
@@ -165,9 +179,9 @@ renderer.setAnimationLoop((time) => {
   const { nightness, mood } = sky.update(hour, camera, carPos);
   terrain.applyMood(mood, nightness);
   world.applyMood(mood, nightness);
+  sign.applyMood(mood, nightness);
   setNight(nightness > 0.5);
   car.update(t, dt, SPEED, yawRate, nightness);
-  audio.update(t, yawRate, nightness);
 
   puffTimer -= dt;
   if (puffTimer <= 0) {
@@ -200,5 +214,8 @@ renderer.setAnimationLoop((time) => {
   terrain.update(t, carPos.z);
   world.update(t, dt, carPos, camX);
   traffic.update(t, dt, carPos.z, nightness);
+  sign.update(carPos.z, camera);
+  const planeSound = planes.update(t, dt, carPos.z, camera.position, nightness);
+  audio.update(t, yawRate, nightness, planeSound);
   renderer.render(scene, camera);
 });
