@@ -16,4 +16,5 @@ npm run preview  # serve the build
 - Terrain, dirt road, river, forest, lanterns: `src/terrain.js`
 - Mountains, clouds, birds: `src/world.js`
 - Sky, sun/moon, stars and lighting: `src/sky.js`
-- Camera, day/night switch, loop: `src/main.js`
+- Sounds (engine, gravel, river, birds, crickets — synthesised, no files): `src/audio.js`
+- Camera, day/night and sound toggles, loop: `src/main.js`

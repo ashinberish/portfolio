@@ -116,6 +116,7 @@ body.is-night {
 }
 
 .links a,
+.sound,
 .daynight {
   background: var(--glass);
   border: 1px solid var(--glass-edge);
@@ -152,9 +153,53 @@ body.is-night {
 }
 
 .links a:focus-visible,
+.sound:focus-visible,
 .daynight:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
+}
+
+/* Sound toggle */
+.sound {
+  position: fixed;
+  top: max(18px, env(safe-area-inset-top));
+  right: 98px;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--ink);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sound .icon {
+  position: absolute;
+  inset: 9px;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sound .icon path:first-child {
+  fill: currentColor;
+}
+
+.sound .on,
+.sound[aria-pressed='true'] .off {
+  display: none;
+}
+
+.sound[aria-pressed='true'] .on {
+  display: block;
+}
+
+.sound:hover {
+  transform: translateY(-1px);
 }
 
 /* Day / night switch */

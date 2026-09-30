@@ -4,6 +4,7 @@ import { createCar } from './car.js';
 import { createTerrain } from './terrain.js';
 import { createWorld } from './world.js';
 import { createSky } from './sky.js';
+import { createAudio } from './audio.js';
 import { roadSlope, roadX } from './path.js';
 
 const canvas = document.getElementById('scene');
@@ -62,6 +63,42 @@ function setNight(night) {
   document.body.classList.toggle('is-night', night);
   toggle.setAttribute('aria-checked', String(night));
   document.querySelector('meta[name="theme-color"]').content = night ? '#1d2a52' : '#d6ebf7';
+}
+
+// --- Sound -------------------------------------------------------------------
+// Off by default; remembers the choice, but browsers still need a gesture to start.
+const audio = createAudio();
+const soundButton = document.querySelector('.sound');
+const store = {
+  get: () => {
+    try {
+      return localStorage.getItem('sound');
+    } catch {
+      return null;
+    }
+  },
+  set: (v) => {
+    try {
+      localStorage.setItem('sound', v);
+    } catch {
+      // Storage unavailable; the toggle still works for this visit.
+    }
+  },
+};
+function setSound(on) {
+  audio.setEnabled(on);
+  soundButton.setAttribute('aria-pressed', String(on));
+  soundButton.setAttribute('aria-label', on ? 'Mute sound' : 'Play sound');
+  store.set(on ? 'on' : 'off');
+}
+soundButton.addEventListener('click', () => setSound(!audio.enabled));
+if (store.get() === 'on') {
+  const resume = (e) => {
+    if (e.target.closest?.('.sound')) return; // the button handles itself
+    if (!audio.enabled) setSound(true);
+  };
+  window.addEventListener('pointerdown', resume, { once: true });
+  window.addEventListener('keydown', resume, { once: true });
 }
 
 // --- Camera ------------------------------------------------------------------
@@ -126,6 +163,7 @@ renderer.setAnimationLoop((time) => {
   world.applyMood(mood, nightness);
   setNight(nightness > 0.5);
   car.update(t, dt, SPEED, yawRate, nightness);
+  audio.update(t, yawRate, nightness);
 
   puffTimer -= dt;
   if (puffTimer <= 0) {
