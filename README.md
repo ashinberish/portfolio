@@ -1,6 +1,6 @@
 # Portfolio
 
-A minimal single-page, non-scrolling 3D portfolio: a little red Mini Cooper road-trips down a winding dirt road through a river valley toward the mountains — forests, clouds, birds, and a day/night cycle that follows the visitor's local time (or a toggle). Built with [three.js](https://threejs.org) and [Vite](https://vite.dev).
+A minimal single-page, non-scrolling 3D portfolio: a little red Mini Cooper convertible road-trips down a winding dirt road through a river valley toward the mountains — forests, clouds, birds, and a day/night cycle that follows the visitor's local time (or a toggle). Built with [three.js](https://threejs.org) and [Vite](https://vite.dev).
 
 ```sh
 npm install
