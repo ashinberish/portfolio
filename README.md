@@ -9,6 +9,8 @@ npm run build    # production build in dist/
 npm run preview  # serve the build
 ```
 
+Page views are tracked with [Vercel Web Analytics](https://vercel.com/docs/analytics) when deployed on Vercel (enable Analytics for the project in the Vercel dashboard).
+
 - Name / role / links: `index.html`
 - Colors (incl. night / dusk / day moods): `src/palette.js`
 - Car model: `src/car.js`

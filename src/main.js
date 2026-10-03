@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { inject } from '@vercel/analytics';
 import './style.css';
 import { createCar } from './car.js';
 import { createTerrain } from './terrain.js';
@@ -10,6 +11,10 @@ import { createPlanes } from './planes.js';
 import { createCursor } from './cursor.js';
 import { createIntro } from './intro.js';
 import { roadSlope, roadX } from './path.js';
+
+// Vercel Web Analytics (page views). Its auto mode reads process.env, which Vite
+// doesn't provide, so tell it explicitly whether this is a dev build.
+inject({ mode: import.meta.env.DEV ? 'development' : 'production' });
 
 const canvas = document.getElementById('scene');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
