@@ -18,6 +18,7 @@ npm run preview  # serve the build
 - Boats on the river and cyclists on the road: `src/traffic.js`
 - Monoplanes: `src/planes.js`
 - Cartoon cursor: `src/cursor.js`
+- Opening shot above the clouds that glides down to the road: `src/intro.js`
 - Sky, sun/moon, stars and lighting: `src/sky.js`
 - Sounds (engine, gravel, river, birds, crickets, planes, horn — synthesised, no files): `src/audio.js`. Click the wagon or press H to honk.
 - Camera, day/night and sound toggles, loop: `src/main.js`

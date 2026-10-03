@@ -8,6 +8,7 @@ import { createAudio } from './audio.js';
 import { createTraffic } from './traffic.js';
 import { createPlanes } from './planes.js';
 import { createCursor } from './cursor.js';
+import { createIntro } from './intro.js';
 import { roadSlope, roadX } from './path.js';
 
 const canvas = document.getElementById('scene');
@@ -24,6 +25,7 @@ scene.add(terrain.object);
 const world = createWorld();
 scene.add(world.object);
 const sky = createSky(scene);
+const intro = createIntro(scene);
 const car = createCar();
 scene.add(car.object);
 const traffic = createTraffic();
@@ -222,12 +224,14 @@ renderer.setAnimationLoop((time) => {
   lookX += (roadX(carPos.z - 26) * 0.6 + carPos.x * 0.4 - lookX) * ease;
   parallax.lerp(pointer, 1 - Math.pow(0.02, dt));
   // Sits off to the right for a three-quarter view of the wagon.
-  camera.position.set(
+  const camPos = camera.position.set(
     camX + 6 + parallax.x * 1.2,
     (4 - parallax.y * 0.5) * distance,
     carPos.z + 12.5 * distance,
   );
-  camera.lookAt(lookAt.set(lookX, 2.3, carPos.z - 30));
+  lookAt.set(lookX, 2.3, carPos.z - 30);
+  intro.update(dt, carPos.z, camPos, lookAt, mood);
+  camera.lookAt(lookAt);
 
   terrain.update(t, carPos.z);
   world.update(t, dt, carPos, camX);
