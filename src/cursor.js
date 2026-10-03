@@ -45,11 +45,6 @@ export function createCursor() {
   window.addEventListener('pointerdown', (e) => {
     if (e.pointerType !== 'mouse') return;
     document.documentElement.classList.add('cursor-down');
-    const burst = document.createElement('div');
-    burst.className = 'cursor-burst';
-    burst.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-    document.body.append(burst);
-    burst.addEventListener('animationend', () => burst.remove());
   });
   window.addEventListener('pointerup', () => document.documentElement.classList.remove('cursor-down'));
 
