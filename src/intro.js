@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 // Opening shot: the camera starts high above a sea of clouds with the name
 // against the sky, holds for a moment, then glides down through the clouds
-// into the chase view behind the wagon.
+// into the chase view behind the car.
 
 const HOLD = 1.8; // seconds above the clouds
 const DESCENT = 3.4; // seconds to glide down

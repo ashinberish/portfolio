@@ -6,15 +6,13 @@ export const palette = {
   shoulder: 0xa7b88a,
   water: 0x5aa9d6,
 
-  carBody: 0x4f86b8,
-  carTrim: 0xf2ecde,
-  wood: 0xb0784c,
+  carBody: 0xc8102e,
+  carTrim: 0xf4f1ea,
   glass: 0x243a5a,
   tire: 0x26303d,
   hub: 0xdfe6ee,
   headlight: 0xfff3c4,
   taillight: 0xff4d5e,
-  canoe: 0xe98a4f,
 
   trunk: 0x8a6448,
   pine: [0x2f6b56, 0x3f7d5c, 0x2a5f58, 0x4a8a66],

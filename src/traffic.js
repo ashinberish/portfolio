@@ -17,7 +17,7 @@ const mat = (color, extra = {}) =>
 const mod = (a, n) => ((a % n) + n) % n;
 
 // Heading for something travelling toward +z along a curve with slope dx/dz.
-// Local +x is forward, matching the wagon.
+// Local +x is forward, matching the car.
 const yawToward = (slope) => Math.atan2(-1, slope);
 
 function shadows(obj) {
@@ -425,7 +425,7 @@ export function createTraffic() {
   const handB = new THREE.Vector3();
   const rowerSpace = new THREE.Matrix4();
 
-  // Returns true when a cyclist is about to pass the wagon (time for a friendly honk).
+  // Returns true when a cyclist is about to pass the car (time for a friendly honk).
   function update(t, dt, carZ, night) {
     let greet = false;
     lantern.emissiveIntensity = 0.2 + night * 3;
@@ -493,7 +493,7 @@ export function createTraffic() {
     for (const b of bikes) {
       b.z = wrapZ(b.z + b.speed * dt, carZ);
       const slope = roadSlope(b.z);
-      // Oncoming lane: to the left of the wagon's direction of travel.
+      // Oncoming lane: to the left of the car's direction of travel.
       const x = roadX(b.z) - 0.8 * Math.hypot(1, slope);
       b.object.position.set(x, ROAD_Y + Math.abs(Math.sin(t * 9 + b.phase)) * 0.01, b.z);
       b.object.rotation.set(0, yawToward(slope), 0);
