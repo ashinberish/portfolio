@@ -43,7 +43,7 @@ export function createAudio() {
     // Engine: a soft, warm hum. Pure low tones (no buzzy saw/square edges),
     // heavily muffled, with only a gentle idle pulse.
     engineBus = ctx.createGain();
-    engineBus.gain.value = 0.1;
+    engineBus.gain.value = 0.045;
     engineFilter = ctx.createBiquadFilter();
     engineFilter.type = 'lowpass';
     engineFilter.frequency.value = 200;

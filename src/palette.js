@@ -10,6 +10,8 @@ export const palette = {
   carTrim: 0xf4f1ea,
   glass: 0xb8d8ea,
   seat: 0xe6d6b8,
+  skin: 0xe6b58f,
+  shirt: 0x37506b,
   tire: 0x26303d,
   hub: 0xdfe6ee,
   headlight: 0xfff3c4,
