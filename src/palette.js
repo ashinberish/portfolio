@@ -8,7 +8,8 @@ export const palette = {
 
   carBody: 0xc8102e,
   carTrim: 0xf4f1ea,
-  glass: 0x243a5a,
+  glass: 0xb8d8ea,
+  seat: 0xe6d6b8,
   tire: 0x26303d,
   hub: 0xdfe6ee,
   headlight: 0xfff3c4,
