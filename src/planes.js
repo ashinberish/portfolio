@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 
-// Little propeller monoplanes crossing the sky ahead of the wagon.
+// Little propeller monoplanes crossing the sky ahead of the car.
 
 const mat = (color, extra = {}) =>
   new THREE.MeshStandardMaterial({ color, roughness: 0.5, metalness: 0, ...extra });

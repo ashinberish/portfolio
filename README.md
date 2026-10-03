@@ -1,6 +1,6 @@
 # Portfolio
 
-A minimal single-page, non-scrolling 3D portfolio: a little wood-panelled wagon with a canoe on the roof road-trips down a winding dirt road through a river valley toward the mountains — forests, clouds, birds, and a day/night cycle that follows the visitor's local time (or a toggle). Built with [three.js](https://threejs.org) and [Vite](https://vite.dev).
+A minimal single-page, non-scrolling 3D portfolio: a little red Mini Cooper convertible road-trips down a winding dirt road through a river valley toward the mountains — forests, clouds, birds, and a day/night cycle that follows the visitor's local time (or a toggle). Built with [three.js](https://threejs.org) and [Vite](https://vite.dev).
 
 ```sh
 npm install
@@ -22,5 +22,5 @@ Page views are tracked with [Vercel Web Analytics](https://vercel.com/docs/analy
 - Cartoon cursor: `src/cursor.js`
 - Opening shot above the clouds that glides down to the road: `src/intro.js`
 - Sky, sun/moon, stars and lighting: `src/sky.js`
-- Sounds (engine, gravel, river, birds, crickets, planes, horn — synthesised, no files): `src/audio.js`. Click the wagon or press H to honk.
+- Sounds (engine, gravel, river, birds, crickets, planes, horn — synthesised, no files): `src/audio.js`. Click the car or press H to honk.
 - Camera, day/night and sound toggles, loop: `src/main.js`

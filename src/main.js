@@ -53,7 +53,7 @@ const puffs = Array.from({ length: 12 }, () => {
 });
 let puffTimer = 0;
 let puffIndex = 0;
-const exhaust = new THREE.Vector3(-1.35, 0.3, 0.3);
+const exhaust = new THREE.Vector3(-1.25, 0.3, 0.3);
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const SPEED = reducedMotion ? 2.5 : 6.5;
@@ -125,7 +125,7 @@ if (store.get('sound') === 'on') {
 }
 
 // --- Horn ----------------------------------------------------------------------
-// Honk by clicking the wagon or pressing H; it also greets passing cyclists.
+// Honk by clicking the car or pressing H; it also greets passing cyclists.
 function honk() {
   car.honk();
   audio.horn();
@@ -235,7 +235,7 @@ renderer.setAnimationLoop((time) => {
   camX += (carPos.x - camX) * ease;
   lookX += (roadX(carPos.z - 26) * 0.6 + carPos.x * 0.4 - lookX) * ease;
   parallax.lerp(pointer, 1 - Math.pow(0.02, dt));
-  // Sits off to the right for a three-quarter view of the wagon.
+  // Sits off to the right for a three-quarter view of the car.
   const camPos = camera.position.set(
     camX + 6 + parallax.x * 1.2,
     (4 - parallax.y * 0.5) * distance,
@@ -249,7 +249,7 @@ renderer.setAnimationLoop((time) => {
   world.update(t, dt, carPos, camX);
   if (traffic.update(t, dt, carPos.z, nightness) && Math.random() < 0.7) honk();
 
-  // The wagon is clickable: show the hover cursor over it (checked once per frame).
+  // The car is clickable: show the hover cursor over it (checked once per frame).
   if (pointerDirty) {
     pointerDirty = false;
     pointerOverCar = hitsCar(lastPointer);
