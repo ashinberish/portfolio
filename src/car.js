@@ -7,142 +7,167 @@ const mat = (color, extra = {}) =>
 
 const box = (w, h, d, r, material) => new THREE.Mesh(new RoundedBoxGeometry(w, h, d, 4, r), material);
 
+// A soft ellipsoid — the building block for the car's rounded shapes.
+const ball = (rx, ry, rz, material) => {
+  const m = new THREE.Mesh(new THREE.SphereGeometry(1, 24, 16), material);
+  m.scale.set(rx, ry, rz);
+  return m;
+};
+
 const WHEEL_RADIUS = 0.28;
 
-// A little red Mini Cooper convertible, roof folded down: bonnet stripes,
-// big round headlights, cream seats. Local +x is forward.
+// A little red Mini Cooper convertible: rounded body, folded top, a driver
+// behind the wheel. Local +x is forward.
 export function createCar() {
   const car = new THREE.Group();
   const body = new THREE.Group();
   car.add(body);
 
-  const paint = mat(palette.carBody, { roughness: 0.35, metalness: 0.1 });
+  const paint = mat(palette.carBody, { roughness: 0.3, metalness: 0.15 });
   const trim = mat(palette.carTrim, { roughness: 0.4 });
   const dark = mat(palette.tire, { roughness: 0.9 });
   const chrome = mat(palette.hub, { roughness: 0.25, metalness: 0.6 });
   const seatMat = mat(palette.seat, { roughness: 0.7 });
+  const skin = mat(palette.skin, { roughness: 0.6 });
+  const shirt = mat(palette.shirt, { roughness: 0.8 });
   const glassMat = mat(palette.glass, { roughness: 0.1, transparent: true, opacity: 0.4 });
 
-  // Short, wide, rounded lower body with the wheels pushed out to the corners.
-  const chassis = box(2.24, 0.5, 1.22, 0.18, paint);
-  chassis.position.y = 0.54;
-  body.add(chassis);
+  // Boxy-but-soft Mini body: an upright rounded hull, not a slab or a bubble.
+  const hull = box(2.12, 0.66, 1.22, 0.2, paint);
+  hull.position.y = 0.58;
+  body.add(hull);
 
-  // Short bonnet sloping down to the nose, with twin white stripes.
-  const bonnet = box(0.82, 0.16, 1.18, 0.07, paint);
-  bonnet.rotation.z = -0.1;
-  bonnet.position.set(0.72, 0.8, 0);
-  for (const z of [-0.13, 0.13]) {
-    const stripe = box(0.76, 0.02, 0.12, 0.01, trim);
-    stripe.position.set(0, 0.075, z);
-    bonnet.add(stripe);
-  }
+  // A gently crowned bonnet panel across the front half.
+  const bonnet = box(0.86, 0.14, 1.12, 0.1, paint);
+  bonnet.position.set(0.64, 0.86, 0);
   body.add(bonnet);
 
-  // Open cabin: door tops and rear deck around a dark tub.
-  for (const z of [-0.56, 0.56]) {
-    const door = box(0.9, 0.2, 0.1, 0.05, paint);
-    door.position.set(-0.12, 0.85, z);
-    body.add(door);
+  // Modest rounded wheel arches — flush fender bulges, not balloons.
+  for (const x of [-0.72, 0.74]) {
+    for (const z of [-0.63, 0.63]) {
+      const flare = ball(0.36, 0.3, 0.1, paint);
+      flare.position.set(x, 0.42, z);
+      body.add(flare);
+    }
   }
-  const deck = box(0.6, 0.18, 1.2, 0.08, paint);
-  deck.position.set(-0.82, 0.84, 0);
-  body.add(deck);
-  const tub = box(0.9, 0.06, 1.02, 0.02, dark);
-  tub.position.set(-0.12, 0.8, 0);
+
+  // Twin white bonnet stripes running up the hood.
+  for (const z of [-0.12, 0.12]) {
+    const stripe = box(1.0, 0.02, 0.1, 0.01, trim);
+    stripe.position.set(0.5, 0.94, z);
+    body.add(stripe);
+  }
+
+  // Open cockpit: a dark recessed tub the seats and driver sit in.
+  const tub = box(1.0, 0.12, 1.0, 0.06, dark);
+  tub.position.set(-0.14, 0.88, 0);
   body.add(tub);
 
   // Folded soft top stacked on the rear deck.
-  const softTop = box(0.36, 0.16, 1.08, 0.07, dark);
-  softTop.position.set(-0.8, 0.98, 0);
+  const softTop = ball(0.24, 0.1, 0.54, dark);
+  softTop.position.set(-0.82, 1.0, 0);
   body.add(softTop);
 
-  // Front seats and a steering wheel (right-hand drive).
+  // Two cream seats.
   for (const z of [-0.26, 0.26]) {
-    const cushion = box(0.32, 0.1, 0.34, 0.04, seatMat);
-    cushion.position.set(-0.18, 0.86, z);
-    const back = box(0.1, 0.36, 0.34, 0.04, seatMat);
+    const cushion = box(0.34, 0.1, 0.34, 0.05, seatMat);
+    cushion.position.set(-0.2, 0.9, z);
+    const back = box(0.1, 0.38, 0.34, 0.05, seatMat);
     back.rotation.z = 0.18;
-    back.position.set(-0.38, 1.02, z);
-    const rest = box(0.08, 0.12, 0.2, 0.04, seatMat);
-    rest.rotation.z = 0.18;
-    rest.position.set(-0.43, 1.25, z);
+    back.position.set(-0.4, 1.06, z);
+    const rest = ball(0.07, 0.08, 0.14, seatMat);
+    rest.position.set(-0.45, 1.3, z);
     body.add(cushion, back, rest);
   }
-  const steering = new THREE.Mesh(new THREE.TorusGeometry(0.1, 0.02, 6, 16), dark);
+
+  // Steering wheel (right-hand drive).
+  const steering = new THREE.Mesh(new THREE.TorusGeometry(0.1, 0.02, 8, 18), dark);
   steering.rotation.y = Math.PI / 2;
-  steering.rotation.x = 0.5;
-  steering.position.set(0.12, 1.0, 0.26);
+  steering.rotation.x = 0.55;
+  steering.position.set(0.14, 1.02, 0.26);
   body.add(steering);
 
+  // A driver behind the wheel.
+  const driver = new THREE.Group();
+  const torso = box(0.26, 0.36, 0.3, 0.11, shirt);
+  torso.position.y = 0.2;
+  const neck = ball(0.07, 0.08, 0.07, skin);
+  neck.position.y = 0.4;
+  const head = ball(0.14, 0.15, 0.14, skin);
+  head.position.y = 0.54;
+  const hair = ball(0.15, 0.12, 0.15, dark);
+  hair.position.y = 0.58;
+  driver.add(torso, neck, head, hair);
+  for (const s of [-1, 1]) {
+    const arm = box(0.32, 0.1, 0.1, 0.05, shirt);
+    arm.rotation.z = 0.35;
+    arm.position.set(0.18, 0.28, s * 0.13);
+    driver.add(arm);
+  }
+  driver.position.set(-0.22, 0.95, 0.26);
+  body.add(driver);
+
   // Raked windscreen in a black frame.
-  const rake = 0.5;
   const screen = new THREE.Group();
-  screen.rotation.z = rake;
-  screen.position.set(0.32, 0.88, 0);
-  const glass = box(0.03, 0.34, 1.06, 0.01, glassMat);
-  glass.position.y = 0.17;
-  const header = box(0.06, 0.05, 1.14, 0.02, dark);
-  header.position.y = 0.35;
+  screen.rotation.z = 0.5;
+  screen.position.set(0.34, 0.9, 0);
+  const glass = box(0.03, 0.32, 1.0, 0.01, glassMat);
+  glass.position.y = 0.16;
+  const header = box(0.06, 0.05, 1.08, 0.02, dark);
+  header.position.y = 0.33;
   screen.add(glass, header);
-  for (const z of [-0.55, 0.55]) {
-    const post = box(0.05, 0.36, 0.04, 0.015, dark);
-    post.position.set(0, 0.18, z);
+  for (const z of [-0.52, 0.52]) {
+    const post = box(0.05, 0.34, 0.04, 0.015, dark);
+    post.position.set(0, 0.17, z);
     screen.add(post);
   }
   body.add(screen);
 
   // Door mirrors with white caps.
-  for (const z of [-0.66, 0.66]) {
-    const mirror = box(0.08, 0.09, 0.14, 0.03, trim);
-    mirror.position.set(0.24, 0.98, z);
+  for (const z of [-0.68, 0.68]) {
+    const mirror = ball(0.05, 0.05, 0.08, trim);
+    mirror.position.set(0.26, 0.98, z);
     body.add(mirror);
   }
 
-  // Black sill and wheel-arch trims.
-  for (const z of [-0.6, 0.6]) {
-    const sill = box(0.86, 0.08, 0.06, 0.03, dark);
-    sill.position.set(-0.02, 0.33, z);
+  // Thin black sills along the bottom of the doors.
+  for (const z of [-0.62, 0.62]) {
+    const sill = box(0.8, 0.07, 0.05, 0.03, dark);
+    sill.position.set(-0.05, 0.33, z);
     body.add(sill);
   }
-  const archGeo = new THREE.TorusGeometry(0.34, 0.05, 6, 20, Math.PI);
-  for (const x of [-0.74, 0.76]) {
-    for (const z of [-0.6, 0.6]) {
-      const arch = new THREE.Mesh(archGeo, dark);
-      arch.position.set(x, 0.28, z);
-      body.add(arch);
-    }
-  }
 
-  // Chrome bumpers and the hexagonal grille.
-  for (const x of [-1.14, 1.14]) {
-    const bumper = box(0.1, 0.1, 1.18, 0.04, chrome);
-    bumper.position.set(x, 0.38, 0);
+  // Chrome bumpers and a wide rounded grille with horizontal bars.
+  for (const x of [-1.1, 1.1]) {
+    const bumper = box(0.1, 0.1, 1.14, 0.05, chrome);
+    bumper.position.set(x, 0.4, 0);
     body.add(bumper);
   }
-  const grilleGeo = new THREE.CylinderGeometry(0.19, 0.19, 0.05, 6);
-  grilleGeo.rotateZ(Math.PI / 2);
-  const grille = new THREE.Mesh(grilleGeo, dark);
-  grille.scale.set(1, 0.65, 1.3);
-  grille.position.set(1.13, 0.6, 0);
+  const grille = box(0.06, 0.26, 0.56, 0.07, dark);
+  grille.position.set(1.08, 0.58, 0);
   body.add(grille);
+  for (const yy of [0.5, 0.58, 0.66]) {
+    const bar = box(0.03, 0.025, 0.52, 0.01, chrome);
+    bar.position.set(1.11, yy, 0);
+    body.add(bar);
+  }
 
-  // Big round headlights sitting proud of the nose; tall tail lights.
+  // Big round headlights on the fenders; tall tail lights.
   const headGeo = new THREE.CylinderGeometry(0.13, 0.13, 0.08, 20);
   headGeo.rotateZ(Math.PI / 2);
-  const ringGeo = new THREE.TorusGeometry(0.135, 0.025, 6, 20);
+  const ringGeo = new THREE.TorusGeometry(0.135, 0.025, 8, 20);
   ringGeo.rotateY(Math.PI / 2);
   const headMat = mat(palette.headlight, { emissive: palette.headlight, emissiveIntensity: 0.3 });
   const tailMat = mat(palette.taillight, { emissive: palette.taillight, emissiveIntensity: 0.3 });
-  const tailGeo = new RoundedBoxGeometry(0.05, 0.2, 0.12, 2, 0.02);
-  for (const z of [-0.4, 0.4]) {
+  const tailGeo = new RoundedBoxGeometry(0.06, 0.2, 0.12, 2, 0.03);
+  for (const z of [-0.45, 0.45]) {
     const head = new THREE.Mesh(headGeo, headMat);
-    head.position.set(1.12, 0.74, z);
+    head.position.set(1.06, 0.74, z);
     const ring = new THREE.Mesh(ringGeo, chrome);
-    ring.position.set(1.15, 0.74, z);
+    ring.position.set(1.1, 0.74, z);
     body.add(head, ring);
     const tail = new THREE.Mesh(tailGeo, tailMat);
-    tail.position.set(-1.13, 0.68, z);
+    tail.position.set(-1.08, 0.68, z);
     body.add(tail);
   }
 
@@ -154,7 +179,7 @@ export function createCar() {
   const hubMat = mat(palette.hub);
 
   const wheels = [];
-  for (const x of [-0.74, 0.76]) {
+  for (const x of [-0.72, 0.74]) {
     for (const z of [-0.54, 0.54]) {
       const wheel = new THREE.Group();
       wheel.add(new THREE.Mesh(tireGeo, dark), new THREE.Mesh(hubGeo, hubMat), new THREE.Mesh(spokeGeo, dark));
@@ -173,7 +198,7 @@ export function createCar() {
 
   // Headlight beam for night time.
   const beam = new THREE.SpotLight(0xfff0c8, 0, 24, 0.5, 0.7, 1.2);
-  beam.position.set(1.2, 0.72, 0);
+  beam.position.set(1.1, 0.72, 0);
   beam.target.position.set(8, 0, 0);
   car.add(beam, beam.target);
 
