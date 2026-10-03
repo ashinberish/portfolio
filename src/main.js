@@ -53,19 +53,41 @@ const exhaust = new THREE.Vector3(-1.35, 0.3, 0.3);
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const SPEED = reducedMotion ? 2.5 : 6.5;
 
+// Remembered preferences (wrapped: storage can be unavailable or throw).
+const store = {
+  get: (key) => {
+    try {
+      return localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  },
+  set: (key, value) => {
+    try {
+      localStorage.setItem(key, value);
+    } catch {
+      // Storage unavailable; the setting still works for this visit.
+    }
+  },
+};
+
 // --- Day / night -------------------------------------------------------------
-// Follows the visitor's local time until they flip the switch.
+// Follows the visitor's local time until they flip the switch; the choice is remembered.
 const toggle = document.querySelector('.daynight');
-let mode = 'auto';
+const MODE_HOUR = { day: 13, night: 23 };
 const localHour = () => {
   const d = new Date();
   return d.getHours() + d.getMinutes() / 60 + d.getSeconds() / 3600;
 };
-let hour = localHour();
+const savedMode = store.get('daynight');
+let mode = Object.hasOwn(MODE_HOUR, savedMode ?? '') ? savedMode : 'auto';
+// A remembered choice starts there directly, without gliding through the clock.
+let hour = mode === 'auto' ? localHour() : MODE_HOUR[mode];
 let isNight = null;
 
 toggle.addEventListener('click', () => {
   mode = isNight ? 'day' : 'night';
+  store.set('daynight', mode);
 });
 
 function setNight(night) {
@@ -75,35 +97,20 @@ function setNight(night) {
   toggle.setAttribute('aria-checked', String(night));
   document.querySelector('meta[name="theme-color"]').content = night ? '#1d2a52' : '#d6ebf7';
 }
+if (mode !== 'auto') setNight(mode === 'night');
 
 // --- Sound -------------------------------------------------------------------
 // Off by default; remembers the choice, but browsers still need a gesture to start.
 const audio = createAudio();
 const soundButton = document.querySelector('.sound');
-const store = {
-  get: () => {
-    try {
-      return localStorage.getItem('sound');
-    } catch {
-      return null;
-    }
-  },
-  set: (v) => {
-    try {
-      localStorage.setItem('sound', v);
-    } catch {
-      // Storage unavailable; the toggle still works for this visit.
-    }
-  },
-};
 function setSound(on) {
   audio.setEnabled(on);
   soundButton.setAttribute('aria-pressed', String(on));
   soundButton.setAttribute('aria-label', on ? 'Mute sound' : 'Play sound');
-  store.set(on ? 'on' : 'off');
+  store.set('sound', on ? 'on' : 'off');
 }
 soundButton.addEventListener('click', () => setSound(!audio.enabled));
-if (store.get() === 'on') {
+if (store.get('sound') === 'on') {
   const resume = (e) => {
     if (e.target.closest?.('.sound')) return; // the button handles itself
     if (!audio.enabled) setSound(true);
@@ -177,7 +184,7 @@ renderer.setAnimationLoop((time) => {
   t += dt;
 
   // Time of day: glide forward through the clock toward the target hour.
-  const target = mode === 'auto' ? localHour() : mode === 'day' ? 13 : 23;
+  const target = mode === 'auto' ? localHour() : MODE_HOUR[mode];
   const ahead = (((target - hour) % 24) + 24) % 24;
   hour = (hour + Math.min(ahead, Math.max(ahead * dt * 1.5, dt * 2))) % 24;
   if (ahead > 12 && mode === 'auto') hour = target; // clock went backwards (e.g. DST)
